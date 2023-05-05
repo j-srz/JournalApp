@@ -1,1 +1,3 @@
-"# JournalApp" 
+# Journal App
+
+
