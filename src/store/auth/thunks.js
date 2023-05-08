@@ -1,20 +1,43 @@
 import { Password } from "@mui/icons-material";
 import { checkinCredentials, login, logout } from "./authSlice";
-import { signInWithGoogle } from "../../firebase/providers";
+import {
+  signInWithGoogle,
+  registerUserWithEmailPassword,
+} from "../../firebase/providers";
 
 export const ckeckingAuthentication = (email, Password) => {
-    return async(dispatch) => {
-        dispatch(checkinCredentials() )
-    }
-}
+  return async (dispatch) => {
+    dispatch(checkinCredentials());
+  };
+};
 
 export const startGoogleSignIn = () => {
-    return async(dispatch) => {
-        dispatch(checkinCredentials() )
+  return async (dispatch) => {
+    dispatch(checkinCredentials());
 
-        const result = await signInWithGoogle();
-        if (!result.ok) return dispatch(logout(result.errorMessage));
+    const result = await signInWithGoogle();
+    if (!result.ok) return dispatch(logout(result.errorMessage));
 
-        dispatch(login(result))
-    }
-}
+    dispatch(login(result));
+  };
+};
+
+export const startCreatingUserWithEmailPassword = ({
+  email,
+  password,
+  displayName,
+}) => {
+  return async (dispatch) => {
+    dispatch(checkinCredentials());
+
+    const { ok, uid, photoURL, errorMessage } = await registerUserWithEmailPassword({
+      email,
+      password,
+      displayName,
+    });
+
+    if (!ok) return dispatch(logout({ errorMessage }));
+
+    dispatch(login({uid, displayName, email, photoURL}));
+  };
+};
